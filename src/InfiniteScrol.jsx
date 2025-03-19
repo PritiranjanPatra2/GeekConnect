@@ -124,7 +124,9 @@ const InfiniteScroll = () => {
         ))
       )}
 
-      {!selectedTag && !selectedPost && <div ref={loader} style={{ height: '100px' }}></div>}
+{loading && <div style={{ textAlign: 'center', fontSize: '18px', margin: '20px 0' }}>Loading...</div>}
+{!selectedTag && !selectedPost && <div ref={loader} style={{ height: '100px' }}></div>}
+
     </div>
   );
 };
