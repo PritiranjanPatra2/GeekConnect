@@ -1,7 +1,8 @@
+// Post.jsx
 import React, { useState } from 'react';
 import { FaHeart, FaComment } from 'react-icons/fa';
 
-const Post = ({ userImage, username, photo, date, tags, comments, onTagClick, onPostClick }) => {
+const Post = ({ userImage, username, photo, date, tags, comments, onTagClick, onPostClick, onProfileClick }) => {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
 
@@ -12,7 +13,7 @@ const Post = ({ userImage, username, photo, date, tags, comments, onTagClick, on
 
   return (
     <div className="post" onClick={() => onPostClick()}>
-      <div className="user-info">
+      <div className="user-info" style={{ cursor: 'pointer' }} onClick={(e) => { e.stopPropagation(); onProfileClick(); }}>
         <img style={{ width: '50px' }} src={userImage} alt={username} />
         <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
           <span>{username}</span>
@@ -37,7 +38,20 @@ const Post = ({ userImage, username, photo, date, tags, comments, onTagClick, on
         </div>
         <div className="comments">
           {comments.map((comment, index) => (
-            <div key={index}>{comment}</div>
+            <div key={index} style={{ display: 'flex', alignItems: 'center', margin: '5px 0' }}>
+              <img 
+                src={comment.userImage} 
+                alt={comment.username} 
+                style={{ width: '30px', height: '30px', borderRadius: '50%', marginRight: '10px' }} 
+              />
+              <span 
+                style={{ color: 'blue', cursor: 'pointer', marginRight: '5px' }} 
+                onClick={(e) => { e.stopPropagation(); onProfileClick(comment.userId, comment.username); }}
+              >
+                {comment.username}
+              </span>
+              {comment.text}
+            </div>
           ))}
         </div>
       </div>

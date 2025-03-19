@@ -1,6 +1,8 @@
+// InfiniteScroll.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Post from './Post';
+import UserProfile from './UserProfile';
 
 const InfiniteScroll = () => {
   const [posts, setPosts] = useState([]);
@@ -9,6 +11,7 @@ const InfiniteScroll = () => {
   const [selectedTag, setSelectedTag] = useState(null);
   const [tagLoading, setTagLoading] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
   const topRef = useRef(null);
 
   useEffect(() => {
@@ -24,6 +27,8 @@ const InfiniteScroll = () => {
         ...post,
         userImage: `https://i.pravatar.cc/50?img=${Math.floor(Math.random() * 70)}`,
         tags: generateTags(post.author),
+        dob: generateRandomDOB(),
+        comments: generateRandomComments()
       }));
       setPosts(prevPosts => [...prevPosts, ...updatedPosts]);
     } catch (error) {
@@ -38,23 +43,64 @@ const InfiniteScroll = () => {
     return [author.split(' ')[0], keywords[randomIndex]];
   };
 
+  const generateRandomDOB = () => {
+    const year = Math.floor(Math.random() * (2000 - 1980 + 1)) + 1980;
+    const month = Math.floor(Math.random() * 12) + 1;
+    const day = Math.floor(Math.random() * 28) + 1;
+    return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+  };
+
+  const generateRandomComments = () => {
+    const comments = ['Amazing!', 'Looks great!', 'Wow!', 'Beautiful!'];
+    const usernames = ['john_doe', 'jane_smith', 'bob_jones', 'alice_w', 'mike_b'];
+    
+    return Array(2).fill().map(() => ({
+      userId: Math.floor(Math.random() * 1000),
+      username: usernames[Math.floor(Math.random() * usernames.length)],
+      text: comments[Math.floor(Math.random() * comments.length)],
+      userImage: `https://i.pravatar.cc/50?img=${Math.floor(Math.random() * 70)}`
+    }));
+  };
+
   const handleTagClick = (tag) => {
     setSelectedTag(tag);
+    setSelectedUser(null);
+    setSelectedPost(null);
     setTagLoading(true);
-    setTimeout(() => {
-      setTagLoading(false);
-    }, 500);
+    setTimeout(() => setTagLoading(false), 500);
     topRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleShowAll = () => {
     setSelectedTag(null);
     setSelectedPost(null);
+    setSelectedUser(null);
     topRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handlePostClick = (post) => {
     setSelectedPost(post);
+    setSelectedUser(null);
+    setSelectedTag(null);
+    topRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleProfileClick = (userIdOrPost, username) => {
+    if (typeof userIdOrPost === 'number') { // Comment user clicked
+      setSelectedUser({
+        username: username,
+        userImage: `https://i.pravatar.cc/50?img=${Math.floor(Math.random() * 70)}`,
+        dob: generateRandomDOB()
+      });
+    } else { // Post author clicked
+      setSelectedUser({
+        username: userIdOrPost.author,
+        userImage: userIdOrPost.userImage,
+        dob: userIdOrPost.dob
+      });
+    }
+    setSelectedPost(null);
+    setSelectedTag(null);
     topRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -70,19 +116,45 @@ const InfiniteScroll = () => {
     <div>
       <div ref={topRef}></div>
 
-      {(selectedPost || selectedTag) && (
+      {(selectedPost || selectedTag || selectedUser) && (
         <div style={{ textAlign: 'center', marginBottom: '20px' }}>
           <button onClick={handleShowAll}>Show All</button>
         </div>
       )}
 
-      {selectedTag && (
-        <div style={{ textAlign: 'center', fontSize: '18px', margin: '10px 0', fontWeight: 'bold' }}>
-          Showing results for <span style={{ color: 'blue' }}>#{selectedTag}</span>
-        </div>
-      )}
-
-      {selectedPost ? (
+      {selectedUser ? (
+        <UserProfile
+          user={selectedUser}
+          posts={posts}
+          onTagClick={handleTagClick}
+          onPostClick={handlePostClick}
+          onBackClick={handleShowAll}
+        />
+      ) : selectedTag ? (
+        <>
+          <div style={{ textAlign: 'center', fontSize: '18px', margin: '10px 0', fontWeight: 'bold' }}>
+            Showing results for <span style={{ color: 'blue' }}>#{selectedTag}</span>
+          </div>
+          {tagLoading ? (
+            <div style={{ textAlign: 'center', fontSize: '18px', margin: '20px 0' }}>Loading...</div>
+          ) : (
+            filteredPosts.map(post => (
+              <Post
+                key={post.id}
+                userImage={post.userImage}
+                username={post.author}
+                photo={post.download_url}
+                date="March 19, 2025"
+                tags={post.tags}
+                comments={post.comments}
+                onTagClick={handleTagClick}
+                onPostClick={() => handlePostClick(post)}
+                onProfileClick={(userId, username) => handleProfileClick(userId || post, username || post.author)}
+              />
+            ))
+          )}
+        </>
+      ) : selectedPost ? (
         <Post
           key={selectedPost.id}
           userImage={selectedPost.userImage}
@@ -90,12 +162,11 @@ const InfiniteScroll = () => {
           photo={selectedPost.download_url}
           date="March 19, 2025"
           tags={selectedPost.tags}
-          comments={['Amazing!', 'Looks great!']}
+          comments={selectedPost.comments}
           onTagClick={handleTagClick}
           onPostClick={() => handlePostClick(selectedPost)}
+          onProfileClick={(userId, username) => handleProfileClick(userId || selectedPost, username || selectedPost.author)}
         />
-      ) : tagLoading ? (
-        <div style={{ textAlign: 'center', fontSize: '18px', margin: '20px 0' }}>Loading...</div>
       ) : (
         filteredPosts.map(post => (
           <Post
@@ -105,20 +176,20 @@ const InfiniteScroll = () => {
             photo={post.download_url}
             date="March 19, 2025"
             tags={post.tags}
-            comments={['Amazing!', 'Looks great!']}
+            comments={post.comments}
             onTagClick={handleTagClick}
             onPostClick={() => handlePostClick(post)}
+            onProfileClick={(userId, username) => handleProfileClick(userId || post, username || post.author)}
           />
         ))
       )}
 
-      {/* Show "Load More" button if there are posts */}
-      {!selectedTag && !selectedPost && (
+      {!selectedTag && !selectedPost && !selectedUser && (
         <div style={{ textAlign: 'center', margin: '20px 0' }}>
           {loading ? (
             <div style={{ fontSize: '18px' }}>Loading...</div>
           ) : (
-            <button onClick={handleLoadMore} style={{border:"none", color:'blue',padding: '10px 20px', fontSize: '16px', cursor: 'pointer' }}>
+            <button onClick={handleLoadMore} style={{ border: 'none', color: 'blue', padding: '10px 20px', fontSize: '16px', cursor: 'pointer' }}>
               Load More ...
             </button>
           )}
