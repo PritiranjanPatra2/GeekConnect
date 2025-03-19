@@ -1,0 +1,183 @@
+.App {
+  font-family: Arial, sans-serif;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.post {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.user-info img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.user-info span {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.post img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.post-actions {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.post-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+  font-size: 16px;
+}
+
+.post-actions button span {
+  margin-left: 5px;
+  font-size: 14px;
+}
+
+.post-actions button:hover {
+  opacity: 0.8;
+}
+
+.post-details {
+  padding: 10px;
+}
+
+.post-details span {
+  font-size: 14px;
+  color: #555;
+}
+
+.tags {
+  margin-top: 10px;
+}
+
+.tags span {
+  display: inline-block;
+  margin-right: 5px;
+  color: #1e90ff;
+  font-size: 14px;
+}
+
+.comments {
+  margin-top: 10px;
+}
+
+.comments div {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.light-theme {
+  background-color: #fff;
+  color: #333;
+}
+
+.light-theme nav a {
+  color: #333;
+}
+
+.light-theme .theme-toggler {
+  background-color: #333;
+  color: #fff;
+}
+
+.dark-theme {
+  background-color: #333;
+  color: #fff;
+}
+
+.dark-theme .theme-toggler {
+  background-color: #fff;
+  color: #333;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.light-mode {
+  background-color: #ffffff;
+  color: #000000;
+  transition: all 0.3s ease;
+}
+
+.dark-mode {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.light-header {
+  background-color: #f5f5f5;
+  color: #000;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dark-header {
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav a {
+  margin: 0 10px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.theme-toggler {
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+  background-color: #ddd;
+  color: #333;
+}
+
+.dark-header .theme-toggler {
+  background-color: #444;
+  color: #fff;
+}
