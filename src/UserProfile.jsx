@@ -30,7 +30,7 @@ const UserProfile = ({ user, posts, onTagClick, onPostClick, onBackClick }) => {
           userPosts.map(post => (
             <Post
               key={post.id}
-              userImage={post.userImage}
+              userImage={user.userImage}
               username={post.author}
               photo={post.download_url}
               date="March 19, 2025"
