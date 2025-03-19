@@ -1,4 +1,4 @@
-// Post.jsx
+// Post.jsx (unchanged)
 import React, { useState } from 'react';
 import { FaHeart, FaComment } from 'react-icons/fa';
 

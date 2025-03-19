@@ -1,13 +1,13 @@
-// UserProfile.jsx
+// UserProfile.jsx (updated)
 import React from 'react';
 import Post from './Post';
 
-const UserProfile = ({ user, posts, onTagClick, onPostClick, onBackClick }) => {
+const UserProfile = ({ user, posts, onTagClick, onPostClick, onBackClick, onProfileClick }) => {
   const userPosts = posts.filter(post => post.author === user.username);
 
   return (
-    <div className="user-profile" style={{width:'300px',margin:'auto'}}>
-      <button onClick={onBackClick} style={{ margin: '20px auto', width:'100px',border: 'none', color: 'blue', cursor: 'pointer' }}>
+    <div className="user-profile" style={{width:'400px',margin:'auto'}}>
+      <button onClick={onBackClick} style={{ marginBottom: '20px', border: 'none', color: 'blue', cursor: 'pointer' }}>
         Back to Feed
       </button>
       
@@ -38,6 +38,7 @@ const UserProfile = ({ user, posts, onTagClick, onPostClick, onBackClick }) => {
               comments={post.comments}
               onTagClick={onTagClick}
               onPostClick={() => onPostClick(post)}
+              onProfileClick={(userId, username) => onProfileClick(userId || post, username || post.author)}
             />
           ))
         ) : (

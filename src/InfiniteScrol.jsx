@@ -1,4 +1,4 @@
-// InfiniteScroll.jsx
+// InfiniteScroll.jsx (updated to pass onProfileClick)
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Post from './Post';
@@ -129,6 +129,7 @@ const InfiniteScroll = () => {
           onTagClick={handleTagClick}
           onPostClick={handlePostClick}
           onBackClick={handleShowAll}
+          onProfileClick={handleProfileClick} // Pass the handler
         />
       ) : selectedTag ? (
         <>
