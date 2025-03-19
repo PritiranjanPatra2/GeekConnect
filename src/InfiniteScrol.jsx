@@ -9,20 +9,11 @@ const InfiniteScroll = () => {
   const [selectedTag, setSelectedTag] = useState(null);
   const [tagLoading, setTagLoading] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
-  const loader = useRef(null);
   const topRef = useRef(null);
 
   useEffect(() => {
     fetchPosts();
   }, [page]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(handleObserver, { threshold: 1.0 });
-    if (loader.current) {
-      observer.observe(loader.current);
-    }
-    return () => observer.disconnect();
-  }, []);
 
   const fetchPosts = async () => {
     if (loading) return;
@@ -47,13 +38,6 @@ const InfiniteScroll = () => {
     return [author.split(' ')[0], keywords[randomIndex]];
   };
 
-  const handleObserver = (entries) => {
-    const target = entries[0];
-    if (target.isIntersecting && !loading && !selectedTag && !selectedPost) {
-      setPage(prevPage => prevPage + 1);
-    }
-  };
-
   const handleTagClick = (tag) => {
     setSelectedTag(tag);
     setTagLoading(true);
@@ -72,6 +56,10 @@ const InfiniteScroll = () => {
   const handlePostClick = (post) => {
     setSelectedPost(post);
     topRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleLoadMore = () => {
+    setPage(prevPage => prevPage + 1);
   };
 
   const filteredPosts = selectedTag
@@ -124,9 +112,18 @@ const InfiniteScroll = () => {
         ))
       )}
 
-{loading && <div style={{ textAlign: 'center', fontSize: '18px', margin: '20px 0' }}>Loading...</div>}
-{!selectedTag && !selectedPost && <div ref={loader} style={{ height: '100px' }}></div>}
-
+      {/* Show "Load More" button if there are posts */}
+      {!selectedTag && !selectedPost && (
+        <div style={{ textAlign: 'center', margin: '20px 0' }}>
+          {loading ? (
+            <div style={{ fontSize: '18px' }}>Loading...</div>
+          ) : (
+            <button onClick={handleLoadMore} style={{border:"none", color:'blue',padding: '10px 20px', fontSize: '16px', cursor: 'pointer' }}>
+              Load More ...
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 };
